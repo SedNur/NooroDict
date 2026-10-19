@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +19,19 @@ jobs:
           unzip -q -o ./*.zip -d tmp
           PKG=$(find tmp -maxdepth 3 -name package.json -not -path "*/node_modules/*" | head -n1)
           cp -r "$(dirname "$PKG")" project
+
+      - name: Expand project into repo (one-time)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          rm -rf project/.github
+          cp -r project/. .
+          rm -f ./*.zip
+          echo "tmp/" >> .git/info/exclude
+          echo "project/" >> .git/info/exclude
+          git add -A
+          git diff --cached --quiet || git commit -m "Expand project files (auto) [skip ci]"
+          git push
 
       - uses: actions/setup-java@v4
         with:
