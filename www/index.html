@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NooroDict</title>
+    <title>SNTG</title>
     <style>
         :root {
             --page-bg: #f9f9ff;
@@ -42,7 +42,7 @@
 
             //            --order-button-color: #82502b;
             //            --order-button-hover-color: #000;
-
+            --finglish-color: #8e8e9b;
         }
 
         html.dark-mode {
@@ -81,6 +81,7 @@
 
             //    --order-button-color: #c9946d;
             //    --order-button-hover-color: #ffffff;
+            --finglish-color: #9f9fad;
         }
 
         html {
@@ -108,6 +109,7 @@ o     اندروید قدیمی) قابل‌اعتماد است. */
 
         #search-input {
             padding: 10px 35px 10px 10px;
+            margin-bottom: 1px;
             width: 100%;
             max-width: 100%;
             box-sizing: border-box;
@@ -115,15 +117,6 @@ o     اندروید قدیمی) قابل‌اعتماد است. */
             color: var(--search-color);
             background-color: var(--search-bg);
             border: 1px solid var(--search-border);
-        }
-
-        /* عرض لیست پیشنهاد — هم‌اندازهٔ تقریبی کادر قدیمی، نه تمام صفحه */
-        #suggestions {
-            left: 0;
-            right: auto;
-            width: 280px;
-            max-width: 100%;
-            box-sizing: border-box;
         }
 
         #clear-search {
@@ -136,16 +129,21 @@ o     اندروید قدیمی) قابل‌اعتماد است. */
             color: var(--text-color);
             font-size: 27px;
             cursor: pointer;
-            display: none;
+//            display: none;
             z-index: 101;
         }
 
         #suggestions {
+            left: 0;
+            right: auto;
+            width: 100%;
+            max-width: 245px;
+            box-sizing: border-box;
+            
             position: absolute;
             border: 1px solid var(--main-border);
             max-height: 330px;
             overflow-y: auto;
-            //            width: 300px;
             background-color: var(--suggestions-bg);
             z-index: 100;
             cursor: pointer;
@@ -168,44 +166,13 @@ o     اندروید قدیمی) قابل‌اعتماد است. */
             font-weight: bold;
         }
 
-        #history-btn {
-            position: absolute;
-            left: 100%;
-            margin-left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            //            border: 1px solid var(--main-border);
-            border-radius: 6px;
-            background: var(--page-bg);
-            //            color: var(--text-color);
-            font-size: 24px;
-            line-height: 1;
-            padding: 4px 6px;
-            cursor: pointer;
-            z-index: 101;
-        }
-
-        #history-btn img {
-            width: 28px;
-            height: 28px;
-            display: block;
-        }
-
-        #history-btn:hover {
-            background: var(--modal-bg);
-            border: 1px solid var(--main-border);
-        }
-
         #history-list {
             position: fixed;
-            right: 8px;
-            top: 105px;
-            left: auto;
-            margin-left: 0;
-            transform: none;
+            bottom: 56px;
+            left: 50%;
+            transform: translateX(-50%);
             border: 1px solid var(--main-border);
-            max-height: 280px;
+            max-height: min(280px, 50vh);
             overflow-y: auto;
             min-width: 200px;
             max-width: 250px;
@@ -282,6 +249,16 @@ o     اندروید قدیمی) قابل‌اعتماد است. */
 
         .derivativesItems {
             color: var(--derivatives-items-color);
+            font-size: 13px;
+        }
+
+        .finglishColor {
+            color: var(--finglish-color);
+            font-size: 16px;
+        }
+
+        .italicText {
+            font-style: italic;
             font-size: 13px;
         }
 
@@ -566,6 +543,31 @@ o           به صفحهٔ زیرین. */
             opacity: 1;
         }
 
+        #history-btn {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--main-border);
+            border-radius: 5%;
+            background-color: transparent;
+            font-size: 22px;
+            cursor: pointer;
+            display: block;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0;
+            z-index: 999;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+            opacity: 0.7;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+
+        #history-btn:active {
+            transform: translateX(-50%) scale(0.92);
+            opacity: 1;
+        }
+
         hr {
             border: none;
             border-top: 1px solid var(--main-border);
@@ -690,12 +692,22 @@ o           به صفحهٔ زیرین. */
         /* پیکان‌های اسکرول در پاپ‌آپ: fixed می‌مانند ولی مختصات با JS
            از روی getBoundingClientRect کارت تنظیم می‌شود تا با drag حرکت کنند */
         html.popup-mode #back-to-top,
-        html.popup-mode #go-to-bottom {
+        html.popup-mode #go-to-bottom,
+        html.popup-mode #history-btn {
             position: fixed;
             z-index: 950;
             bottom: auto; /* top توسط JS ست می‌شود */
         }
 
+        /* دکمهٔ تاریخچه در پاپ‌آپ: وسط پایین کارت (left/top با JS) */
+        html.popup-mode #history-btn {
+            transform: none;
+        }
+
+        html.popup-mode #history-btn:active {
+            transform: scale(0.92);
+            opacity: 1;
+        }
 
     </style>
     <link rel="manifest" href="manifest.json">
@@ -720,7 +732,6 @@ o           به صفحهٔ زیرین. */
             <div class="menu-separator"></div>
             <div class="menu-item" onclick="showStorageUsage()">📦 نمایش فضای ذخیره‌سازی</div>
             <div class="menu-separator"></div>
-            <div class="menu-item" onclick="toggleHistoryList(event)">📃 سابقهٔ جستجو</div>
             <div class="menu-item" onclick="clearSearchHistory()">🧹 پاک کردن سابقهٔ جستجو</div>
         </div>
     </div>
@@ -762,6 +773,7 @@ o           به صفحهٔ زیرین. */
 
     <button id="back-to-top" title="بازگشت به بالا">￪</button>
     <button id="go-to-bottom" title="رفتن به پایین">￬</button>
+    <button id="history-btn" type="button" title="سابقهٔ جستجو" onclick="toggleHistoryList(event)">📜</button>
 
     <script>
         const DEFAULT_GLOSSARY_FILES = [];
@@ -843,7 +855,7 @@ o           به صفحهٔ زیرین. */
                         div.classList.add('history-selected');
                         document.getElementById('search-input').value = term;
                         const clearBtn = document.getElementById('clear-search');
-                        if (clearBtn) clearBtn.style.display = 'block';
+//                        if (clearBtn) clearBtn.style.display = 'block';
                         requestAnimationFrame(() => {
                             setTimeout(() => {
                                 list.style.display = 'none';
@@ -855,6 +867,8 @@ o           به صفحهٔ زیرین. */
                 });
             }
             list.style.display = 'block';
+            list.scrollTop = 0; // لیست همیشه از بالاترین مورد شروع شود
+            if (typeof positionHistoryListForPopup === 'function') positionHistoryListForPopup();
         }
 
         function openMeaningModal(html) {
@@ -1626,7 +1640,7 @@ o           به صفحهٔ زیرین. */
                 key.toLowerCase().startsWith(lowerQuery)
             );
 
-            matchingKeys.slice(0, 20).forEach(key => {
+            matchingKeys.slice(0, 30).forEach(key => {
                 const div = document.createElement('div');
                 div.textContent = key; // shows gt / Gt / GT exactly as in JSON
                 div.onclick = () => {
@@ -1652,9 +1666,18 @@ o           به صفحهٔ زیرین. */
         function showMeaning(term) {
             const lowerTerm = term.toLowerCase();
             const resultsContainer = document.getElementById("results-container");
+            // ارتفاع را تا پایان اسکرول نگه می‌داریم تا با خالی شدن نتایج، صفحه کوتاه نشود و اسکرول نرم دیده شود
+            const scrollCtx = getScrollContext(); // در پاپ‌آپ: #popup-card ، در صفحهٔ اصلی: window
+            resultsContainer.style.minHeight = resultsContainer.offsetHeight + 'px';
             resultsContainer.innerHTML = '';
-            // نتایج آمده → × کادر جستجو مخفی و فوکوس برداشته شود
-            if (typeof hideClearSearchBtn === 'function') hideClearSearchBtn();
+            const releaseHeight = () => {
+                resultsContainer.style.minHeight = '';
+                scrollCtx.el.removeEventListener('scrollend', releaseHeight);
+            };
+            scrollCtx.el.addEventListener('scrollend', releaseHeight);
+            setTimeout(releaseHeight, 1500);
+            scrollCtx.scrollTo(0); // نتیجهٔ جدید همیشه از بالای صفحه
+            // نتایج آمده → فوکوس از کادر جستجو برداشته شود
             const si = document.getElementById('search-input');
             if (si) si.blur();
 
@@ -1966,11 +1989,15 @@ o           به صفحهٔ زیرین. */
                     return match;
                 }
             );
+            t = t.replace(/●/g, '<span class="bulletItems">●</span>');
             t = t.replace(/•/g, '<span class="bulletItems">●</span>');
-            t = t.replace(/(⦗[^⦘]+⦘)/g, '<span class="domainTag">$1</span>');
-            t = t.replace(/⦅([^⦆]*?)⦆/g, '<span class="derivativesTag">$1</span>');
+//            t = t.replace(/(⦗[^⦘]+⦘)/g, '<span class="domainTag">$1</span>');
+            t = t.replace(/(⟮[^⟯]+⟯)/g, '<span class="domainTag">$1</span>');
+            t = t.replace(/〈([^⟩]*?)〉/g, '<span class="derivativesTag">$1</span>'); // U+2329 = 〈  and  U+232a = 〉
             t = t.replace(/⟨([^⟩]*?)⟩/g, '<span class="derivativesItems">$1</span>'); // U+27e8 = ⟨  and U+27e9 = ⟩
-            t = t.replace(/〈([^⟩]*?)〉/g, '<span class="derivativesItems">$1</span>'); // U+2329 = 〈  and  U+232a = 〉
+            t = t.replace(/⟬([^⟭]*?)⟭/g, '<span class="italicText">$1</span>'); // U+27ec = ⟬  and U+27ed = ⟭
+            t = t.replace(/⦅([^⦆]*?)⦆/g, '<span class="finglishColor">$1</span>');
+            t = t.replace(/〔([^〕]*?)〕/g, '<span class="italicText">$1</span>');
 
             return t;
         }
@@ -1978,38 +2005,11 @@ o           به صفحهٔ زیرین. */
         const clearBtn = document.getElementById("clear-search");
         const searchInput = document.getElementById("search-input");
 
-        // × داخل کادر جستجو: فقط وقتی فوکوس روی کادر است دیده شود
-        // (وابسته به تایپ کردن نیست). بعد از نمایش نتایج مخفی می‌شود.
-        function showClearSearchBtn() {
-            if (clearBtn) clearBtn.style.display = "block";
-        }
-        function hideClearSearchBtn() {
-            if (clearBtn) clearBtn.style.display = "none";
-        }
-
-        searchInput.addEventListener("focus", showClearSearchBtn);
-        searchInput.addEventListener("blur", function() {
-            // تأخیر کوتاه تا کلیک روی خود × فرصت ثبت داشته باشد
-            setTimeout(function() {
-                if (document.activeElement !== searchInput && document.activeElement !== clearBtn) {
-                    hideClearSearchBtn();
-                }
-            }, 180);
-        });
-
-        clearBtn.addEventListener("mousedown", function(e) {
-            // جلوگیری از blur قبل از click
-            e.preventDefault();
-        });
-
         clearBtn.addEventListener("click", function() {
             searchInput.value = "";
             document.getElementById("suggestions").innerHTML = "";
-            showClearSearchBtn();
             searchInput.focus();
         });
-
-        // history moved to main menu (📃 سابقهٔ جستجو)
 
         const backToTopBtn = document.getElementById("back-to-top");
         const goToBottomBtn = document.getElementById("go-to-bottom");
@@ -2202,16 +2202,38 @@ o           به صفحهٔ زیرین. */
             if (btn) btn.addEventListener('click', closeAppOrPopup);
         })();
 
+        /** در پاپ‌آپ، لیست تاریخچه را درست بالای دکمهٔ 📜 (وسط پایین کارت) نگه می‌دارد. */
+        function positionHistoryListForPopup() {
+            if (!document.documentElement.classList.contains('popup-mode')) return;
+            const card = document.getElementById('popup-card');
+            const list = document.getElementById('history-list');
+            if (!card || !list || list.style.display !== 'block') return;
+            const rect = card.getBoundingClientRect();
+            const btnTop = rect.bottom - 40 - 8;
+            list.style.left = (rect.left + rect.width / 2) + 'px';
+            list.style.bottom = (window.innerHeight - btnTop + 8) + 'px';
+            list.style.maxHeight = Math.max(120, Math.min(280, rect.height - 80)) + 'px';
+        }
+
         /** پیکان‌های بالا/پایین را گوشهٔ پایین کارت پاپ‌آپ می‌چسباند (با drag جابه‌جا می‌شوند). */
         function syncScrollButtonsToCard() {
             if (!document.documentElement.classList.contains('popup-mode')) return;
             const card = document.getElementById('popup-card');
             const up = document.getElementById('back-to-top');
             const down = document.getElementById('go-to-bottom');
+            const hist = document.getElementById('history-btn');
             if (!card) return;
             const rect = card.getBoundingClientRect();
             const size = 40;
             const pad = 8;
+            if (hist) {
+                hist.style.position = 'fixed';
+                hist.style.left = (rect.left + rect.width / 2 - size / 2) + 'px';
+                hist.style.right = 'auto';
+                hist.style.top = (rect.bottom - size - pad) + 'px';
+                hist.style.bottom = 'auto';
+            }
+            positionHistoryListForPopup();
             if (up) {
                 up.style.position = 'fixed';
                 up.style.left = (rect.left + pad) + 'px';
