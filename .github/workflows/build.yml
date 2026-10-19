@@ -1,11 +1,8 @@
-name: Build APK from zip
+name: Build APK
 
 on:
   push:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   build:
@@ -13,47 +10,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Unzip project
-        run: |
-          mkdir tmp
-          unzip -q -o ./*.zip -d tmp
-          PKG=$(find tmp -maxdepth 3 -name package.json -not -path "*/node_modules/*" | head -n1)
-          cp -r "$(dirname "$PKG")" project
-
-      - name: Expand project into repo (one-time)
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          rm -rf project/.github
-          cp -r project/. .
-          rm -f ./*.zip
-          echo "tmp/" >> .git/info/exclude
-          echo "project/" >> .git/info/exclude
-          git add -A
-          git diff --cached --quiet || git commit -m "Expand project files (auto) [skip ci]"
-          git push
-
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
 
       - name: Install npm dependencies
-        working-directory: project
         run: npm install
 
       - name: Capacitor sync
-        working-directory: project
         run: npx cap sync android
 
       - name: Make gradlew executable
-        run: chmod +x project/android/gradlew
+        run: chmod +x android/gradlew
 
       - name: Build debug APK
-        working-directory: project/android
+        working-directory: android
         run: ./gradlew assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
           name: noorodict-debug-apk
-          path: project/android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
