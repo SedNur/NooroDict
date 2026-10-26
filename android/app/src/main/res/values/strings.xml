@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">NooroDict</string>
     <string name="title_activity_main">NooroDict</string>
-    <string name="package_name">com.NooroDict.dictionary</string>
-    <string name="custom_url_scheme">com.NooroDict.dictionary</string>
+    <string name="package_name">com.noorodict.dictionary</string>
+    <string name="custom_url_scheme">com.noorodict.dictionary</string>
 </resources>
