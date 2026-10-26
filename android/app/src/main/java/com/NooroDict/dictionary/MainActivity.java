@@ -1,4 +1,4 @@
-package com.NooroDict.dictionary;
+package com.noorodict.dictionary;
 
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
